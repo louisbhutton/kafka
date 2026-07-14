@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kafka</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="wordmark">KAFKA<span class="wordmark-dot">.</span></div>
+
+      <div class="view-switch">
+        <button class="view-tab active" id="tabCalendar" data-view="calendar">Calendar</button>
+        <button class="view-tab" id="tabToday" data-view="today">Today</button>
+        <button class="view-tab" id="tabJournal" data-view="journal">Journal</button>
+        <button class="view-tab" id="tabNotes" data-view="notes">Notes</button>
+      </div>
+
+      <div class="month-nav" id="monthNav">
+        <button class="icon-btn" id="prevMonth" aria-label="Previous month">‹</button>
+        <div class="month-label" id="monthLabel">—</div>
+        <button class="icon-btn" id="nextMonth" aria-label="Next month">›</button>
+        <button class="icon-btn add-date-btn" id="addDateBtn" title="Add a custom date/event" aria-label="Add custom date">+</button>
+      </div>
+
+      <div class="search-wrap">
+        <input id="searchInput" class="search-input" type="text" placeholder="Search notes…" autocomplete="off" />
+        <div id="searchResults" class="search-results hidden"></div>
+      </div>
+
+      <div class="level-chip" id="levelChip" title="Your level">
+        <span class="level-chip-num" id="levelChipNum">Lv1</span>
+      </div>
+
+      <button class="settings-btn" id="settingsBtn" aria-label="Settings" title="Settings">⚙</button>
+    </header>
+
+    <!-- Settings / theme panel -->
+    <div class="settings-panel hidden" id="settingsPanel">
+      <div class="settings-title">Theme</div>
+      <div id="themeOptions">
+        <div class="theme-option" data-theme="system">
+          <span class="theme-swatch" style="background: linear-gradient(135deg, #16181d 50%, #fafaf8 50%);"></span>
+          System default
+        </div>
+        <div class="theme-option" data-theme="kafka-dark">
+          <span class="theme-swatch" style="background:#16181d;"></span>
+          Kafka Dark
+        </div>
+        <div class="theme-option" data-theme="tokyo-night">
+          <span class="theme-swatch" style="background:#1a1b26;"></span>
+          Tokyo Night
+        </div>
+        <div class="theme-option" data-theme="minimal-light">
+          <span class="theme-swatch" style="background:#fafaf8; border-color:#ccc;"></span>
+          Minimal Light
+        </div>
+
+        <div class="settings-subtitle">Catppuccin</div>
+        <div class="theme-option" data-theme="catppuccin-latte">
+          <span class="theme-swatch" style="background:#eff1f5; border-color:#ccc;"></span>
+          Catppuccin Latte
+        </div>
+        <div class="theme-option" data-theme="catppuccin-frappe">
+          <span class="theme-swatch" style="background:#303446;"></span>
+          Catppuccin Frappé
+        </div>
+        <div class="theme-option" data-theme="catppuccin-macchiato">
+          <span class="theme-swatch" style="background:#24273a;"></span>
+          Catppuccin Macchiato
+        </div>
+        <div class="theme-option" data-theme="catppuccin-mocha">
+          <span class="theme-swatch" style="background:#1e1e2e;"></span>
+          Catppuccin Mocha
+        </div>
+
+        <div class="settings-subtitle">Warm &amp; Library</div>
+        <div class="theme-option" data-theme="gruvbox-dark">
+          <span class="theme-swatch" style="background:#282828;"></span>
+          Gruvbox Dark
+        </div>
+        <div class="theme-option" data-theme="gruvbox-light">
+          <span class="theme-swatch" style="background:#fbf1c7; border-color:#ccc;"></span>
+          Gruvbox Light
+        </div>
+        <div class="theme-option" data-theme="old-library">
+          <span class="theme-swatch" style="background:#efe0bf; border-color:#ccc;"></span>
+          Old Library (Sepia)
+        </div>
+      </div>
+    </div>
+
+    <!-- Day-color highlight popover (right-click a calendar day) -->
+    <div class="color-popover hidden" id="colorPopover">
+      <div class="color-popover-title">Highlight this day</div>
+      <div class="color-swatch-row" id="colorSwatchRow"></div>
+      <button class="color-clear-btn" id="colorClearBtn">Clear highlight</button>
+    </div>
+
+    <!-- Calendar view -->
+    <main class="main" id="calendarView">
+
+      <section class="calendar-pane">
+        <div class="weekday-row" id="weekdayRow"></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </section>
+
+      <section class="docket-pane">
+        <div class="docket-header">
+          <div class="docket-date" id="docketDate">—</div>
+          <div class="docket-holiday hidden" id="docketHoliday"></div>
+        </div>
+
+        <div class="docket-scroll">
+          <div class="docket-section">
+            <div class="section-label">Tasks<span class="section-count" id="taskCount"></span></div>
+            <ul class="task-list" id="taskList"></ul>
+            <form class="add-row" id="addTaskForm">
+              <input type="text" id="newTaskTitle" placeholder="Add a task…" autocomplete="off" />
+              <input type="time" id="newTaskTime" />
+              <button type="submit" class="add-btn" aria-label="Add task">+</button>
+            </form>
+          </div>
+
+          <div class="docket-section">
+            <div class="section-label">Notes<span class="section-count" id="noteCount"></span></div>
+            <ul class="note-list" id="noteList"></ul>
+            <button class="add-note-btn" id="addNoteBtn">+ New note for this day</button>
+          </div>
+
+          <div class="docket-section">
+            <div class="section-label">Custom events<span class="section-count" id="eventCount"></span></div>
+            <ul class="event-list" id="eventList"></ul>
+          </div>
+
+          <div class="docket-section">
+            <div class="section-label">Upcoming</div>
+            <ul class="upcoming-list" id="upcomingList"></ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Today dashboard view -->
+    <main class="today-page hidden" id="todayView">
+      <div class="today-hero">
+        <div class="today-weekday" id="todayWeekday">—</div>
+        <div class="today-date" id="todayDateBig">—</div>
+        <div class="today-clock" id="todayClock">--:--:--</div>
+        <div class="today-holiday hidden" id="todayHolidayBadge"></div>
+      </div>
+
+      <!-- RPG Leveling / Focus Engine -->
+      <div class="focus-engine">
+        <div class="focus-engine-top">
+          <div class="level-panel">
+            <div class="level-panel-num" id="levelPanelNum">Level 1</div>
+            <div class="level-panel-title">The Toughest 15-Year-Old in the World</div>
+            <div class="exp-bar-track">
+              <div class="exp-bar-fill" id="expBarFill" style="width:0%"></div>
+            </div>
+            <div class="exp-bar-label" id="expBarLabel">0 / 100 EXP</div>
+          </div>
+          <div class="streak-panel">
+            <div class="streak-flame">🔥</div>
+            <div class="streak-num" id="streakNum">0</div>
+            <div class="streak-label">Cycle Streak</div>
+          </div>
+        </div>
+
+        <div class="focus-timer">
+          <div class="focus-timer-display" id="focusTime">25:00</div>
+          <div class="focus-timer-label" id="focusLabel">Set your focus length and begin</div>
+
+          <div class="focus-config" id="focusConfig">
+            <div class="focus-config-row">
+              <span class="focus-config-label">Focus</span>
+              <div class="preset-row" id="focusPresets">
+                <button class="preset-btn" data-min="10">10m</button>
+                <button class="preset-btn active" data-min="25">25m</button>
+                <button class="preset-btn" data-min="55">55m</button>
+                <button class="preset-btn" data-min="60">1h</button>
+              </div>
+              <input type="range" id="focusSlider" min="5" max="90" step="5" value="25" />
+              <span class="focus-slider-val" id="focusSliderVal">25 min</span>
+            </div>
+            <div class="focus-config-row">
+              <span class="focus-config-label">Break</span>
+              <div class="preset-row" id="breakPresets">
+                <button class="preset-btn active" data-min="5">Short · 5m</button>
+                <button class="preset-btn" data-min="15">Long · 15m</button>
+              </div>
+              <input type="range" id="breakSlider" min="1" max="30" step="1" value="5" />
+              <span class="focus-slider-val" id="breakSliderVal">5 min</span>
+            </div>
+          </div>
+
+          <div class="focus-timer-actions">
+            <button class="focus-btn secondary hidden" id="focusCancelBtn">Cancel</button>
+            <button class="focus-btn" id="focusStartBtn">Start Focus</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="today-columns">
+        <section class="today-col">
+          <div class="section-label">Today's tasks<span class="section-count" id="todayTaskCount"></span></div>
+          <ul class="task-list task-list-big" id="todayTaskList"></ul>
+          <div class="quick-add-task" id="todayQuickAdd">
+            <button type="button" class="fab-add-btn" id="todayFabBtn" aria-label="Add a task">+</button>
+            <form class="quick-add-form" id="todayAddTaskForm">
+              <input type="text" id="todayNewTaskTitle" placeholder="Add a task for today…" autocomplete="off" />
+              <input type="time" id="todayNewTaskTime" />
+              <button type="submit" class="quick-add-confirm" aria-label="Add task">Add</button>
+              <button type="button" class="quick-add-cancel" id="todayQuickAddCancel" aria-label="Cancel">×</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="today-col">
+          <div class="section-label">Today's notes<span class="section-count" id="todayNoteCount"></span></div>
+          <ul class="note-list" id="todayNoteList"></ul>
+          <button class="add-note-btn" id="todayAddNoteBtn">+ New note for today</button>
+
+          <div class="section-label upcoming-label-spaced">Coming up</div>
+          <ul class="upcoming-list" id="todayUpcomingList"></ul>
+        </section>
+      </div>
+    </main>
+
+    <!-- Journal view -->
+    <main class="journal-page hidden" id="journalView">
+      <div class="journal-nav">
+        <button class="icon-btn" id="journalPrevDay" aria-label="Previous day">‹</button>
+        <div class="journal-nav-date" id="journalNavDate">—</div>
+        <button class="icon-btn" id="journalNextDay" aria-label="Next day">›</button>
+        <button class="journal-today-btn" id="journalTodayBtn">Today</button>
+      </div>
+
+      <div class="journal-card">
+        <div class="journal-mood-row" id="journalMoodRow">
+          <button class="mood-btn" data-mood="🙂">🙂</button>
+          <button class="mood-btn" data-mood="😌">😌</button>
+          <button class="mood-btn" data-mood="😐">😐</button>
+          <button class="mood-btn" data-mood="😔">😔</button>
+          <button class="mood-btn" data-mood="😣">😣</button>
+          <button class="mood-btn" data-mood="😄">😄</button>
+          <button class="mood-btn" data-mood="😴">😴</button>
+        </div>
+        <textarea class="journal-textarea" id="journalTextarea" placeholder="How was today? Write freely — press Cmd/Ctrl + Enter to save…"></textarea>
+        <div class="journal-footer">
+          <span class="journal-save-hint" id="journalSaveHint">—</span>
+          <div class="journal-actions">
+            <button class="text-btn danger hidden" id="journalDeleteBtn">Delete</button>
+            <button class="primary-btn" id="journalSaveBtn">Save entry</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Notes workspace view -->
+    <main class="notes-page hidden" id="notesView">
+      <aside class="notes-sidebar">
+        <div class="notes-sidebar-label">Quick jump</div>
+        <button class="notes-sidebar-item" data-offset="-1">Yesterday</button>
+        <button class="notes-sidebar-item" data-offset="0">Today</button>
+        <button class="notes-sidebar-item" data-offset="1">Tomorrow</button>
+        <button class="notes-sidebar-item" data-offset="2">Day After Tomorrow</button>
+        <button class="notes-sidebar-item all-notes" data-offset="all">All Notes</button>
+        <button class="add-note-btn notes-sidebar-new" id="notesNewBtn">+ New note</button>
+      </aside>
+      <section class="notes-main">
+        <div class="notes-main-header"><span id="notesMainHeader">—</span><span class="section-count" id="notesMainHeaderCount"></span></div>
+        <ul class="note-list notes-main-list" id="notesMainList"></ul>
+      </section>
+    </main>
+
+  </div>
+
+  <!-- Custom date/event modal -->
+  <div class="overlay hidden" id="customEventOverlay">
+    <div class="mini-modal">
+      <div class="mini-modal-title">Add a custom date</div>
+      <input type="date" id="customEventDate" class="mini-modal-input" />
+      <input type="text" id="customEventTitle" class="mini-modal-input" placeholder="Event name…" autocomplete="off" />
+      <div class="color-swatch-row" id="customEventColorRow"></div>
+      <div class="mini-modal-actions">
+        <button class="text-btn" id="customEventCancel">Cancel</button>
+        <button class="primary-btn" id="customEventSave">Add to calendar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note preview slide-over: a quick peek without committing to the full editor -->
+  <div class="preview-slideover" id="notePreviewSlideover">
+    <div class="preview-slideover-backdrop" id="previewBackdrop"></div>
+    <div class="preview-slideover-panel">
+      <div class="preview-slideover-header">
+        <div class="preview-slideover-title" id="previewTitle">—</div>
+        <button class="icon-btn" id="previewCloseBtn" aria-label="Close preview">×</button>
+      </div>
+      <div class="preview-slideover-meta" id="previewMeta"></div>
+      <div class="preview-slideover-body" id="previewBody"></div>
+      <div class="preview-slideover-footer">
+        <button class="primary-btn" id="previewOpenBtn">Open full note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Note editor overlay -->
+  <div class="overlay hidden" id="noteOverlay">
+    <div class="note-editor">
+      <input type="text" id="noteTitleInput" class="note-title-input" placeholder="Untitled note" />
+      <textarea id="noteContentInput" class="note-content-input" placeholder="Write something…"></textarea>
+
+      <!-- Linked notes: click chips to connect, no [[bracket]] syntax -->
+      <div class="note-links-tray">
+        <div class="note-links-heading">Linked notes</div>
+        <div class="note-links-chips" id="linkedChips">
+          <div class="link-picker">
+            <button type="button" class="add-link-btn" id="addLinkBtn">+ Link a note</button>
+            <div class="link-picker-menu hidden" id="linkPickerMenu"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attached files / PDFs -->
+      <div class="note-files-tray" id="filesTray">
+        <button type="button" class="add-file-btn" id="addFileBtn">+ Attach file / PDF</button>
+        <span class="file-drop-hint">or drop a file here</span>
+      </div>
+
+      <div class="note-editor-footer">
+        <input type="text" id="noteTagsInput" class="note-tags-input" placeholder="tags, comma, separated" />
+        <div class="note-editor-actions">
+          <button id="deleteNoteBtn" class="text-btn danger hidden">Delete</button>
+          <button id="closeNoteBtn" class="text-btn">Close</button>
+          <button id="saveNoteBtn" class="primary-btn">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="holidays.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Kafka
+Comment=Notes and calendar, all in one
+Exec=/usr/local/bin/kafka
+Icon=kafka
+Terminal=false
+Type=Application
+Categories=Office;Utility;
+StartupWMClass=kafka
