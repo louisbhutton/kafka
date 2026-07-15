@@ -24,7 +24,6 @@
   --shadow: rgba(0, 0, 0, 0.45);
 }
 
-/* Tokyo Night — the well-known editor palette, adapted */
 [data-theme="tokyo-night"] {
   --bg: #1a1b26;
   --surface: #20222e;
@@ -48,7 +47,7 @@
   --shadow: rgba(0, 0, 0, 0.5);
 }
 
-/* Minimal Light — Fantastical/Cron-style airy light palette */
+
 [data-theme="minimal-light"] {
   --bg: #fafaf8;
   --surface: #ffffff;
@@ -72,7 +71,6 @@
   --shadow: rgba(0, 0, 0, 0.12);
 }
 
-/* Catppuccin Latte (light) */
 [data-theme="catppuccin-latte"] {
   --bg: #eff1f5;
   --surface: #ffffff;
@@ -96,7 +94,7 @@
   --shadow: rgba(76, 79, 105, 0.15);
 }
 
-/* Catppuccin Frappé */
+
 [data-theme="catppuccin-frappe"] {
   --bg: #303446;
   --surface: #292c3c;
@@ -120,7 +118,6 @@
   --shadow: rgba(0, 0, 0, 0.45);
 }
 
-/* Catppuccin Macchiato */
 [data-theme="catppuccin-macchiato"] {
   --bg: #24273a;
   --surface: #1e2030;
@@ -144,7 +141,6 @@
   --shadow: rgba(0, 0, 0, 0.5);
 }
 
-/* Catppuccin Mocha — deep rich purple/dark */
 [data-theme="catppuccin-mocha"] {
   --bg: #1e1e2e;
   --surface: #181825;
