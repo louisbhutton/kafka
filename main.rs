@@ -54,8 +54,7 @@ fn create_task(
         .map_err(|e| e.to_string())
 }
 
-/// Toggling a task to *completed* awards a small EXP reward for the RPG
-/// leveling system; toggling it back off does not claw EXP back.
+
 #[tauri::command]
 fn toggle_task(state: State<AppState>, id: i64) -> Result<UserStats, String> {
     let conn = state.conn.lock().map_err(|e| e.to_string())?;
