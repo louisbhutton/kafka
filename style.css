@@ -1,9 +1,4 @@
-/* ============================================================
-   Kafka — design tokens
-   Themes are just CSS variable swaps on [data-theme], so adding
-   a new one later means adding one more block below — no other
-   file needs to change.
-   ============================================================ */
+
 
 :root,
 [data-theme="kafka-dark"] {
