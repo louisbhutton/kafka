@@ -1,8 +1,6 @@
 const invoke = window.__TAURI__.core.invoke;
 
-// ---------------------------------------------------------------
-// State
-// ---------------------------------------------------------------
+
 
 const today = new Date();
 let viewYear = today.getFullYear();
