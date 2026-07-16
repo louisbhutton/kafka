@@ -280,9 +280,6 @@ button { font-family: inherit; cursor: pointer; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 .hidden { display: none !important; }
 
-/* ============================================================
-   Top bar
-   ============================================================ */
 
 .topbar {
   display: flex;
@@ -474,9 +471,7 @@ button { font-family: inherit; cursor: pointer; }
 .theme-option.active { color: var(--text); background: var(--accent-wash); }
 .theme-swatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
 
-/* ============================================================
-   Day-highlight popover (right-click a calendar day)
-   ============================================================ */
+
 
 .color-popover {
   position: fixed;
@@ -509,7 +504,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .color-clear-btn:hover { color: var(--holiday); border-color: var(--holiday); }
 
-/* Mini modal (custom event add) */
+
 .mini-modal {
   width: min(340px, 90vw);
   background: var(--surface);
@@ -534,9 +529,6 @@ button { font-family: inherit; cursor: pointer; }
 .mini-modal-input:focus { border-color: var(--accent-dim); }
 .mini-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
 
-/* ============================================================
-   Main split — calendar view
-   ============================================================ */
 
 .main { flex: 1; display: flex; min-height: 0; }
 
@@ -589,7 +581,7 @@ button { font-family: inherit; cursor: pointer; }
 .day-cell.is-selected { background: var(--surface-2); border-color: var(--accent-dim); }
 .day-cell.has-holiday { border-top: 2px solid var(--holiday); }
 
-/* Past days: no harsh strikeout — a soft muted/blurred look instead. */
+
 .day-cell.is-past:not(.other-month) {
   opacity: 0.55;
   filter: saturate(0.7) blur(0.2px);
@@ -611,9 +603,6 @@ button { font-family: inherit; cursor: pointer; }
 .day-dot.note { background: var(--text-faint); }
 .day-dot.event { background: var(--holiday); }
 
-/* ============================================================
-   Day docket
-   ============================================================ */
 
 .docket-pane { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .docket-header { padding: 20px 24px 12px; flex-shrink: 0; }
@@ -645,7 +634,7 @@ button { font-family: inherit; cursor: pointer; }
 .section-count { color: var(--text-faint); font-size: 11px; }
 .upcoming-label-spaced { margin-top: 26px; }
 
-/* Tasks */
+
 
 .task-list { list-style: none; margin: 0; padding: 0; }
 .task-item {
@@ -685,8 +674,7 @@ button { font-family: inherit; cursor: pointer; }
   transform: rotate(-45deg) translate(0, -1px);
 }
 
-/* Bug fix: long titles now wrap onto new lines instead of pushing the
-   layout sideways. */
+
 .task-title {
   flex: 1;
   font-size: 14px;
