@@ -32,9 +32,6 @@ const HIGHLIGHT_COLORS = [
   { name: "graphite", hex: "#8a8d94" },
 ];
 
-// ---------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------
 
 function fmtDate(d) {
   const y = d.getFullYear();
@@ -64,7 +61,7 @@ function addDays(dateStr, n) {
 function isToday(s) { return s === fmtDate(today); }
 function isPast(s) { return s < fmtDate(today); }
 
-// Nepal's weekly government holidays: both Saturday and Sunday.
+
 function isWeekend(dateObj) { return dateObj.getDay() === 0 || dateObj.getDay() === 6; }
 
 function niceDayLabel(s) {
@@ -96,9 +93,7 @@ function holidayFor(dateStr) {
   return typeof NEPAL_HOLIDAYS_BY_DATE !== "undefined" ? NEPAL_HOLIDAYS_BY_DATE[dateStr] : null;
 }
 
-// ---------------------------------------------------------------
-// Theme engine
-// ---------------------------------------------------------------
+
 
 const THEME_KEY = "kafka-theme";
 const mediaDark = window.matchMedia("(prefers-color-scheme: dark)");
@@ -141,9 +136,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ---------------------------------------------------------------
-// View switching (Calendar / Today / Journal / Notes)
-// ---------------------------------------------------------------
+
 
 const calendarView = document.getElementById("calendarView");
 const todayView = document.getElementById("todayView");
@@ -176,9 +169,7 @@ document.getElementById("tabToday").addEventListener("click", () => switchView("
 document.getElementById("tabJournal").addEventListener("click", () => switchView("journal"));
 document.getElementById("tabNotes").addEventListener("click", () => switchView("notes"));
 
-// ---------------------------------------------------------------
-// Calendar rendering
-// ---------------------------------------------------------------
+
 
 async function loadMonthCounts() {
   const rows = await invoke("get_month_counts", { year: viewYear, month: viewMonth });
@@ -237,7 +228,7 @@ async function renderCalendar() {
     if (isToday(cell.date)) el.classList.add("is-today");
     if (cell.date === selectedDate) el.classList.add("is-selected");
     if (isWeekend(cell.dateObj)) el.classList.add("is-weekend");
-    // Gracefully signal days behind us with a muted look — no harsh strikeout.
+
     if (isPast(cell.date) && !isToday(cell.date)) el.classList.add("is-past");
 
     const holiday = holidayFor(cell.date);
@@ -282,9 +273,7 @@ function selectDate(date) {
   renderDocket();
 }
 
-// ---------------------------------------------------------------
-// Day-highlight color popover (right-click a calendar day)
-// ---------------------------------------------------------------
+
 
 const colorPopover = document.getElementById("colorPopover");
 const colorSwatchRow = document.getElementById("colorSwatchRow");
@@ -328,9 +317,7 @@ document.addEventListener("click", (e) => {
   if (!colorPopover.contains(e.target)) colorPopover.classList.add("hidden");
 });
 
-// ---------------------------------------------------------------
-// Custom date/event modal ("+" button next to month nav)
-// ---------------------------------------------------------------
+
 
 const customEventOverlay = document.getElementById("customEventOverlay");
 const customEventDate = document.getElementById("customEventDate");
@@ -368,9 +355,7 @@ document.getElementById("customEventSave").addEventListener("click", async () =>
   await renderDocket();
 });
 
-// ---------------------------------------------------------------
-// Day docket (calendar view side panel)
-// ---------------------------------------------------------------
+
 
 async function renderDocket() {
   document.getElementById("docketDate").textContent = niceDayLabel(selectedDate);
@@ -435,7 +420,7 @@ function renderTasks(tasks, listId, countId) {
       ${t.due_time ? `<span class="task-time">${t.due_time}</span>` : ""}
       <button class="task-del" data-id="${t.id}" title="Delete">×</button>
     `;
-    // Whole row (except the delete button) toggles the task — not just the tiny checkbox.
+
     li.addEventListener("click", (e) => {
       if (e.target.closest(".task-del")) return;
       toggleTask(t.id);
